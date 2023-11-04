@@ -1,7 +1,7 @@
 import { useAst } from "./AstProvider";
 
 export default function SetSqlFileForm(){
-    const { setQuery } = useAst();
+    const { addQuery } = useAst();
     
     const handleInputChange = event => {
         // eventからFileオブジェクトを取り出す
@@ -12,7 +12,7 @@ export default function SetSqlFileForm(){
         // コールバック関数を準備
         reader.onload = () => {
             //resetFilePath(reader.result);
-            setQuery(reader.result);
+            addQuery(reader.result);
         };
         // 読む
         reader.readAsText(file);

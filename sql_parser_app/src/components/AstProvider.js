@@ -6,14 +6,15 @@ const AstContext = createContext();
 export const useAst = () => useContext(AstContext);
 
 export default function AstProvider({ children }) {
-    const [ ast, setAst ] = useState("");
+    // 複数のASTを持つ
+    const [ asts, setAsts ] = useState("");
 
-    const setQuery = (query) => {
-        setAst(ParsedSql(query));
+    const addQuery = (query) => {
+        setAsts(ParsedSql(query));
     }
 
     return (
-        <AstContext.Provider value={{ ast, setQuery }}>
+        <AstContext.Provider value={{ asts, addQuery }}>
             { children }
         </AstContext.Provider>
     );

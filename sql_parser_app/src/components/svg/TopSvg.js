@@ -8,7 +8,6 @@ const CANVAS_SIZE = {
 
 export default function TopSvg() {
 
-
     return (
         <svg {...CANVAS_SIZE}>
             <rect x="0" y="0" {...CANVAS_SIZE} fill="#cccccc" />
