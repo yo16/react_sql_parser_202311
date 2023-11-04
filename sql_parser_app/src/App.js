@@ -1,5 +1,3 @@
-import AstProvider from './components/AstProvider';
-
 function App() {
   return (
     <>

@@ -1,12 +1,17 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState } from "react";
+
+import ParsedSql from "./ParsedSql.js";
 
 const AstContext = createContext();
 
-export default function AstProvider({ children }) {
-    const [ast, setAst] = useState(1);
+export default function AstProvider({ query, children }) {
+    const [ast, setAst] = useState("");
+    const setQuery = (query) => {
+        setAst(ParsedSql(query));
+    }
 
     return (
-        <AstContext.Provider value={{ ast, setAst }}>
+        <AstContext.Provider value={{ ast, setQuery }}>
             { children }
         </AstContext.Provider>
     );
