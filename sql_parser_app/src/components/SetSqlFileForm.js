@@ -12,7 +12,7 @@ export default function SetSqlFileForm(){
         // コールバック関数を準備
         reader.onload = () => {
             //resetFilePath(reader.result);
-            addQuery(reader.result);
+            addQuery(file.name, reader.result);
         };
         // 読む
         reader.readAsText(file);
