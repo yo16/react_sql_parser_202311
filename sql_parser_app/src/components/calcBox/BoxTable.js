@@ -1,17 +1,40 @@
+import BoxColumn from "./BoxColumn";
 
 export default class BoxTable {
     constructor(tableName){
         this.tableName = tableName;
         this.columns = [];
-        this.isDefined = false;
     }
 
-    // astのcolumn要素から、列を登録する
+    // astのcolumn要素から、列情報を登録する
+    addColumnByAst(astC, tableMap){
+        let boxCol = new BoxColumn(astC, tableMap);
+
+        // 登録(すでにあったら上書きする)
+        this.columns.filter(
+            cObj => cObj.name !== boxCol.name
+        );
+        this.columns.push(
+            boxCol
+        );
+
+        return boxCol;
+    }
+
+    // 列名だけ登録する
+    addColumnByName(columnName){
+        // 登録(すでにあったらなにもしない)
+        if (this.columns.filter(c => c.name===columnName).length === 0 ){
+            let boxCol = new BoxColumn({name:columnName, expr:{as:columnName}},{},false);
+            this.columns.push(boxCol);
+        }
+    }
+
     addColumn(astC, columnOnly=false){
         let pushedColumnInfo = null;
 
         if (columnOnly){
-            // 列名だけの指定の場合(astの形式ではない)
+            // 列名だけの指定の場合(astの形式ではないから、適当に加工して入れる)
             pushedColumnInfo = {
                 column: astC.column,
                 sourceColumns: [],
@@ -66,7 +89,7 @@ export default class BoxTable {
         // 登録
         if (pushedColumnInfo){
             // 存在していたら上書き
-            this.columns = this.columns.filter(
+            this.columns.filter(
                 cObj => cObj.column !== pushedColumnInfo.column
             );
             this.columns.push(

@@ -26,9 +26,10 @@ export default function CalBoxPos(oneAst) {
 
     // クラス化
     let bsf = new BoxSqlFile(oneAst);
-    //console.log({bsf});
+    console.log({bsf});
 
     // dict化
+    
 
 
     return {a:1};
