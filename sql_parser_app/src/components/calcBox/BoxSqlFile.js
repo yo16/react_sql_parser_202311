@@ -26,7 +26,8 @@ export default class BoxSqlFile {
 
         // テーブルを登録する
         // 自分(select)と、fromと、withがテーブル名
-        console.log(`--------${name}------`);
+        console.debug("-- BoxSqlFile.registAst --");
+        console.debug(`# TABLE ${name}`);
         this.pushTable(name);
         curAst.from.forEach(f => {
             this.pushTable(f.table);
@@ -37,16 +38,40 @@ export default class BoxSqlFile {
             });
         }
         
+        // from
+        // fromに書かれているテーブルは、存在は知っているが、詳細は知らない
+        let fromTableMap = {};  // テーブルをリネームしている場合のマップ(as → table)
+        curAst.from.forEach(f => {
+            // テーブルを作るだけで列は作れないので、registAstでなくpushTableだけ
+            this.pushTable(f.table);
+            
+            // as→tableマップに追加
+            fromTableMap[f.as ? f.as: f.table] = f.table;
+        })
+        
         // テーブルの列を登録する
-        // 自分(select)
+        // 自分に列を追加するとともに、fromテーブルにも存在しているので追加
         let curIdx = this.tableName2Idx[name];
         let curTableObj = this.tableObjs[curIdx];
         curTableObj.isDefined = true;       // このSQLファイルでselect文が定義されているフラグ
         curAst.columns.forEach(c => {
-            curTableObj.addColumn(c);
+            console.debug("## COLUMNs")
+            // 自分の列を追加する
+            // この際に解析した、元情報を得る
+            let addedColumnInfo = curTableObj.addColumn(c);
+
+            // from
+            addedColumnInfo.sourceColumns.forEach(c => {
+                console.debug(`### ${c.column}`)
+                let curFromTableIdx = this.tableName2Idx[fromTableMap[c.table]];
+                let curFromTableObj = this.tableObjs[curFromTableIdx];
+                if (c.table){
+                    curFromTableObj.addColumn(c, true);
+                }
+            })
+
         });
-        // from
-        //   元のテーブルは登録しないのでスキップ
+        
         // with
         if (curAst.with){
             curAst.with.forEach(w => {
@@ -69,10 +94,6 @@ export default class BoxSqlFile {
         // objectを作る
         this.tableObjs.push(new BoxTable(tableName));
         //console.log(`Table added! ${tableName}`)
-    }
-
-    addTable(tableName){
-
     }
 }
 

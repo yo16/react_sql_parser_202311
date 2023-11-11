@@ -1,5 +1,5 @@
 
-export default class BoxSqlFile {
+export default class BoxTable {
     constructor(tableName){
         this.tableName = tableName;
         this.columns = [];
@@ -7,13 +7,24 @@ export default class BoxSqlFile {
     }
 
     // astのcolumn要素から、列を登録する
-    addColumn(astC){
+    addColumn(astC, columnOnly=false){
         let pushedColumnInfo = null;
-        if (astC.expr.type==="column_ref"){
+
+        if (columnOnly){
+            // 列名だけの指定の場合(astの形式ではない)
+            pushedColumnInfo = {
+                column: astC.column,
+                sourceColumns: [],
+                type: "EMPTY",
+            };
+
+        } else if (astC.expr.type==="column_ref"){
             pushedColumnInfo = {
                 column: astC.as ? astC.as : astC.expr.column,
-                sourceColumn: [astC.expr.column],
-                sourceTable: [astC.expr.table],
+                sourceColumns: [{
+                    column: astC.expr.column,
+                    table: astC.expr.table,
+                }],
                 type: "column_ref",
             };
 
@@ -32,18 +43,21 @@ export default class BoxSqlFile {
             // 存在しない場合はasのみで他は空になる
             pushedColumnInfo = {
                 column: astC.as,
-                sourceColumn: useValues.map(v => v.column), 
-                sourceTable: useValues.map(v => v.table),
+                sourceColumns: useValues.map(v => {return {column: v.column, table: v.table};}), 
                 type: "function",
             };
 
         } else if (astC.expr.type==="cast"){
             pushedColumnInfo = {
                 column: astC.as,
-                sourceColumn: [astC.expr.column],
-                sourceTable: [astC.expr.table],
+                sourceColumns: [{
+                    column: astC.expr.column,
+                    table: astC.expr.table,
+                }],
                 type: "cast",
             };
+        
+        // } else if 値を固定で指定しているパターン   もあるはず
 
         } else {
             console.assert(false, `Unkown column type! [${astC.expr.type}].`);
@@ -51,11 +65,17 @@ export default class BoxSqlFile {
 
         // 登録
         if (pushedColumnInfo){
-            this.columns.push(pushedColumnInfo);
+            // 存在していたら上書き
+            this.columns = this.columns.filter(
+                cObj => cObj.column !== pushedColumnInfo.column
+            );
+            this.columns.push(
+                pushedColumnInfo
+            );
         }
 
-        // 登録した情報を返す
-        //return pushedColumnInfo;
+        // 参照したテーブルと列を返す
+        return pushedColumnInfo;
     }
 }
 
