@@ -13,8 +13,8 @@ export default function ParsedSql({query="select * from duel;"}){
     } catch(error){
         console.log(error);
     }
-    console.log({ast});
+    //console.log({ast});
 
-    return ast;
+    return ast[0];
 }
 

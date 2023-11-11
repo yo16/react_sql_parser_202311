@@ -13,14 +13,23 @@ box : {
     right,
     width,
     height,
+    text,
 }
 */
 
-// astに含まれているすべてのテーブルの高さを取得
-function getTablesHeight(ast){
-    
-}
+import BoxSqlFile from "./BoxSqlFile.js";
 
-export default function CalBoxPos({ ast }) {
+
+export default function CalBoxPos(oneAst) {
+    // astを解釈して、変数に入れる
+    // 一度クラスで整理してから、dict化する
+
+    // クラス化
+    let bsf = new BoxSqlFile(oneAst);
+    console.log({bsf});
+
+    // dict化
+
+
     return {a:1};
 }

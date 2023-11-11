@@ -9,7 +9,7 @@ const CANVAS_SIZE = {
 
 export default function TopSvg() {
     const { asts } = useAst();
-    console.log({asts});
+    //console.log({asts});
 
     return (
         <svg {...CANVAS_SIZE}>
