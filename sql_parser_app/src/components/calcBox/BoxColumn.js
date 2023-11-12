@@ -1,8 +1,33 @@
 
+// {table, column} の配列を返す
+const extractFromExprFn = {
+    alter           : extractFromAlter,
+    aggr_func       : extractFromAggrFunc,
+    any_value       : extractFromAnyValue,
+    window_func     : extractFromWindowFunc,
+    "array"         : extractFromArray,
+    assign          : extractFromAssign,
+    binary_expr     : extractFromBinaryExpr,
+    case            : extractFromCase,
+    cast            : extractFromCast,
+    column_ref      : extractFromColumn_ref,
+    datatype        : extractFromDatatype,
+    extract         : extractFromExtract,
+    flatten         : extractFromFlatten,
+    fulltext_search : extractFromFulltextSearch,
+    function        : extractFromFunction,
+    insert          : extractFromInsert,
+    interval        : extractFromInterval,
+    show            : extractFromShow,
+    struct          : extractFromStruct,
+    tables          : extractFromTables,
+    unnest          : extractFromUnnest,
+    "window"        : extractFromWindow,
+};
+
 export default class BoxColumn {
     constructor(columnAst, tableMap={}, execteParse=true){
         this.ast = columnAst;
-        this.as = columnAst.expr.as;
         this.columnName = undefined;
         this.sourceColumns = [];
         this.columnType = undefined;
@@ -23,12 +48,13 @@ export default class BoxColumn {
         const supportedTypes = ["column_ref", "function", "cast"];
         console.assert(supportedTypes.indexOf(this.columnType)>=0, `Unknown Column Type. [${this.columnType}]`);
         
+        let exprResult = extractFromExprFn[this.columnType](astC.expr, tableMap);
+        this.columnName = astC.as ? astC.as : (exprResult.length>0)? exprResult[0].column: null;
+        this.sourceColumns = exprResult;
+        /*
         if (this.columnType === "column_ref"){
-            this.columnName = astC.expr.as ? astC.as : astC.expr.column;
-            this.sourceColumns = [{
-                column: astC.expr.column,
-                table: tableMap[astC.expr.table],
-            }];
+            
+            this.sourceColumns = ;
 
         } else if (this.columnType === "function"){
             this.columnName = astC.as;
@@ -41,21 +67,22 @@ export default class BoxColumn {
             }
 
             // numberはlineageには不要なので除外する
-            const useValues = astC.expr.args.value.filter(v => v.type !== "number");
-            this.sourceColumns = useValues.map(v => {return {column: v.column, table: tableMap[v.table]};});
+            //const useValues = astC.expr.args.value.filter(v => v.type !== "number");
+            //this.sourceColumns = useValues.map(v => {return {column: v.column, table: tableMap[v.table]};});
 
         } else if (this.columnType === "cast"){
             this.columnName = astC.as;
-            this.sourceColumns = [{
-                column: astC.expr.column,
-                table: tableMap[astC.expr.table],
-            }];
+            //this.sourceColumns = [{
+            //    column: astC.expr.column,
+            //    table: tableMap[astC.expr.table],
+            //}];
         
         // } else if 値を固定で指定しているパターン   もあるはず
 
         } else {
             console.assert(false, `Unkown column type! [${this.columnType}].`);
         }
+        */
     }
 
     // このBoxColumnの元となるテーブルと列リストを返す
@@ -64,3 +91,32 @@ export default class BoxColumn {
     }
 
 }
+
+
+function extractFromAlter(expr, tableMap){return [];}
+function extractFromAggrFunc(expr, tableMap){return [];}
+function extractFromAnyValue(expr, tableMap){return [];}
+function extractFromWindowFunc(expr, tableMap){return [];}
+function extractFromArray(expr, tableMap){return [];}
+function extractFromAssign(expr, tableMap){return [];}
+function extractFromBinaryExpr(expr, tableMap){return [];}
+function extractFromCase(expr, tableMap){return [];}
+function extractFromCast(expr, tableMap){
+    // cast前の情報を引き継ぐ
+    return extractFromExprFn[expr.expr.type](expr.expr, tableMap);
+}
+function extractFromColumn_ref(expr, tableMap){
+    return [{table: tableMap[expr.table], column:expr.column}];
+}
+function extractFromDatatype(expr, tableMap){return [];}
+function extractFromExtract(expr, tableMap){return [];}
+function extractFromFlatten(expr, tableMap){return [];}
+function extractFromFulltextSearch(expr, tableMap){return [];}
+function extractFromFunction(expr, tableMap){return [];}
+function extractFromInsert(expr, tableMap){return [];}
+function extractFromInterval(expr, tableMap){return [];}
+function extractFromShow(expr, tableMap){return [];}
+function extractFromStruct(expr, tableMap){return [];}
+function extractFromTables(expr, tableMap){return [];}
+function extractFromUnnest(expr, tableMap){return [];}
+function extractFromWindow(expr, tableMap){return [];}
