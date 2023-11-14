@@ -1,21 +1,24 @@
-import { useAst } from "../AstProvider";
-import SqlFile from "./SqlFile";
+import {v4} from "uuid";
 
-const CANVAS_SIZE = {
-    width: 800,
-    height: 400
-};
+import { useAst } from "../AstProvider";
+import SvgSqlFile from "./SvgSqlFile";
 
 
 export default function TopSvg() {
-    const { asts } = useAst();
+    const { fileDefs } = useAst();
     //console.log({asts});
 
+    // SqlFileから幅と高さを得る
+    let svgSize = {
+        width: fileDefs.reduce((s,d) => s+d.box.sqlFile.width, 0),
+        height: fileDefs.reduce((s,d) => Math.max(s,d.box.sqlFile.height), 0),
+    };
+
     return (
-        <svg {...CANVAS_SIZE}>
-            <rect x="0" y="0" {...CANVAS_SIZE} fill="#cccccc" />
+        <svg {...svgSize}>
+            <rect x="0" y="0" {...svgSize} fill="#cccccc" />
             {
-                asts.map(a => <SqlFile {...a} key={a.id} />)
+                fileDefs.map(a => <SvgSqlFile {...a} key={ v4() } />)
             }
         </svg>
     );

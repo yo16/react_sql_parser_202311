@@ -1,5 +1,4 @@
 import React, { createContext, useState, useContext } from "react";
-import {v4} from "uuid";
 
 import ParsedSql from "./ParsedSql.js";
 import CalcBoxPos from "./calcBox/CalcBoxPos.js";
@@ -9,15 +8,14 @@ export const useAst = () => useContext(AstContext);
 
 export default function AstProvider({ children }) {
     // 複数のASTを持つ
-    const [ asts, setAsts ] = useState([]);
+    const [ fileDefs, setFileDefs ] = useState([]);
 
     const addQuery = (fileName, query) => {
         const ast = ParsedSql({query});
-        setAsts(
+        setFileDefs(
             [
-                ...asts,
+                ...fileDefs,
                 {
-                    id: v4(),
                     fileName,
                     ast: ast,
                     query: query,
@@ -28,7 +26,7 @@ export default function AstProvider({ children }) {
     }
 
     return (
-        <AstContext.Provider value={{ asts, addQuery }}>
+        <AstContext.Provider value={{ fileDefs, addQuery }}>
             { children }
         </AstContext.Provider>
     );

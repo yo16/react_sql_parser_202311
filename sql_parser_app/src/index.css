@@ -13,5 +13,25 @@ code {
 }
 
 .SqlFile {
-  background-color: #000;
+  fill: #fcfcfc;
+  stroke: #666;
+  stroke-width: 2px;
 }
+
+.SvgSqlFile {
+  fill: rgb(84, 84, 156);
+}
+.SvgTable {
+  fill: rgb(194, 94, 94);
+}
+.SvgTableTitle {
+  fill: #9c9;
+  stroke: #666;
+  stroke-width: 1px;
+}
+.SvgTableColumn {
+  fill: #ccc;
+  stroke: #966;
+  stroke-width: 1px;
+}
+
