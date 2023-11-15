@@ -32,7 +32,7 @@ export default class BoxSqlFile {
         this.addTable(tableName);
         
         // withから、その中の情報を登録
-        console.log(111);
+        //console.log(111);
         if (curAst.with){
             curAst.with.forEach(w => {
                 this.parseAst(w.stmt.ast, w.name.value);
@@ -40,7 +40,7 @@ export default class BoxSqlFile {
         }
 
         // fromから、参照テーブル(名だけ)を登録
-        console.log(`222: ${tableName}`);
+        //console.log(`222: ${tableName}`);
         let fromTableMap = {};  // テーブルをリネームしている場合のマップ(as → table)
         curAst.from.forEach(f => {
             this.addTable(f.table);
@@ -51,43 +51,31 @@ export default class BoxSqlFile {
         if (curAst.from.length===1){
             fromTableMap[null] = curAst.from[0].table;
         }
-        console.log({fromTableMap});
+        //console.log({fromTableMap});
         
         // selectから、
         // - テーブルの列を登録する
         // - その列内で使っているテーブルと列を登録する
-        console.log(333);
         let curIdx = this.tableName2Idx[tableName];
         let curTableObj = this.tableObjs[curIdx];
         curAst.columns.forEach(c => {
-            console.debug("## COLUMNs");
-            console.log("333-1");
-            console.log({c});
+            //console.debug("## COLUMNs");
+            //console.log({c});
             // curTableObjへ、列を追加する
             let addedColumnInfo = curTableObj.addColumnByAst(c, fromTableMap);
-            console.log({curTableObj});
-            console.log({addedColumnInfo});
             console.assert((addedColumnInfo.name !== undefined), "name is undef!");
             console.debug(`### [${addedColumnInfo.name}]`);
-            console.log("333-2");
-            console.log({addedColumnInfo});
 
             // 列で参照されたテーブルへ、列を追加する
             let sourceTableColumns = addedColumnInfo.getSourceTableColumn();
-            console.log({sourceTableColumns});
             sourceTableColumns.forEach(stc => {
-                console.log("333-333-1");
+                if (stc.table === undefined){
+                    curTableObj.addSourceTable(null);
+                    stc.table = null;
+                }
                 let curFromTableIdx = this.tableName2Idx[stc.table];
                 let curFromTableObj = this.tableObjs[curFromTableIdx];
-                console.log("333-333-2");
-                if (stc.table){
-                    console.log("333-333-3");
-                    console.log(stc.column);
-                    curFromTableObj.addColumnByName(stc.column);
-                    console.log(curFromTableObj);
-                    console.log("333-333-4");
-                }
-                console.log("333-333-5");
+                curFromTableObj.addColumnByName(stc.column);
             });
 
         });

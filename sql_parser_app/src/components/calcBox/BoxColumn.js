@@ -35,6 +35,9 @@ export default class BoxColumn {
         if (execteParse){
             // parseして属性へ設定する
             this.parseColumn(columnAst, tableMap);
+        }else{
+            this.columnName = columnAst.name;
+            this.sourceColumns = [{table:null, column:columnAst.name}];
         }
     }
 
@@ -50,6 +53,7 @@ export default class BoxColumn {
         
         let exprResult = extractFromExprFn[this.columnType](astC.expr, tableMap);
         this.columnName = astC.as ? astC.as : (exprResult.length>0)? exprResult[0].column: null;
+        //this.sourceColumns = [...this.sourceColumns, exprResult];
         this.sourceColumns = exprResult;
         /*
         if (this.columnType === "column_ref"){

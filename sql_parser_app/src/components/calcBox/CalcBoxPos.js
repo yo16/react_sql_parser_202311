@@ -65,7 +65,6 @@ function getFileHeight(objBoxSqlFile){
             getTableHeight(to) + 
             SIZE_DEF.TABLE_MARGIN.y*2;
     });
-    console.log(tableHights);
 
     return Math.max(...tableHights);
 }
