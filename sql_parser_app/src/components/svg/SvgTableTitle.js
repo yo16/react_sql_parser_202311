@@ -1,12 +1,18 @@
 
-export default function SvgTableTitle({x, y, width, height, name, nameDisplay, basePos}) {
+export default function SvgTableTitle({ bwsTableTitle }) {
     return (
         <>
             <rect
-                x={basePos.x + x} y={basePos.y + y} width={width} height={height}
+                x={ bwsTableTitle.x } y={ bwsTableTitle.y }
+                width={ bwsTableTitle.width } height={ bwsTableTitle.height }
                 className="SvgTableTitle"
             ></rect>
-            <text x={basePos.x + x + 3} y={basePos.y + y + 16} fullname={name}>{ nameDisplay }</text>
+            <text
+                x={bwsTableTitle.x + 3} y={bwsTableTitle.y + 16}
+                fullname={ bwsTableTitle.text }
+            >
+                { bwsTableTitle.textShort }
+            </text>
         </>
     );
 }

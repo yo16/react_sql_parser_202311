@@ -2,20 +2,19 @@ import SvgTableTitle from "./SvgTableTitle";
 import SvgTableColumn from "./SvgTableColumn";
 import {v4} from "uuid";
 
-export default function SvgTable({x, y, width, height, tableTitle, columns, basePos}) {
+export default function SvgTable({bwsTable}) {
     return (
         <>
             <rect
-                x={basePos.x + x} y={basePos.y + y}
-                width={width} height={height}
+                x={ bwsTable.x } y={ bwsTable.y }
+                width={ bwsTable.width} height={ bwsTable.height }
                 className="SvgTable"
             ></rect>
-            <SvgTableTitle {...tableTitle} basePos={basePos}></SvgTableTitle>
+            <SvgTableTitle bwsTableTitle={ bwsTable.title }></SvgTableTitle>
             {
-                columns.map(c =>
+                bwsTable.columns.map(c =>
                     <SvgTableColumn
-                        {...c}
-                        basePos={basePos}
+                        bwsColumn={ c }
                         key={ v4() }
                     ></SvgTableColumn>
                 )

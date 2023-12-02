@@ -10,9 +10,13 @@ export default function TopSvg() {
 
     // SqlFileから幅と高さを得る
     let svgSize = {
-        width: fileDefs.reduce((s,d) => s+d.box.sqlFile.width, 0),
-        height: fileDefs.reduce((s,d) => Math.max(s,d.box.sqlFile.height), 0),
+        width: fileDefs.reduce((s,d) => s + d.bwsSqlFile.width, 0),
+        height: fileDefs.reduce((s,d) => Math.max(s,d.bwsSqlFile.height), 0),
     };
+
+    // テーブルのリンクと、列のリンクを作成
+    let linkPairs = [];
+
 
     return (
         <svg {...svgSize}>

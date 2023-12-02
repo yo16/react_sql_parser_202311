@@ -6,7 +6,6 @@ export default class BoxSqlFile {
         this.tableName2Idx = {};        // 名前からtableObjsなどのインデックスへ変換するdict
         this.tableOrder = [];           // tableObjsの上流/下流の関係を示す 0が最下流
 
-        console.log("BoxSqlFile");
         console.log({ast});
         
         // テーブル名なしに項目を受け入れるためのテーブルを登録

@@ -19,7 +19,7 @@ box : {
 }
 */
 
-import BoxSqlFile from "./BoxSqlFile.js";
+import BoxSqlFile from "../Box/BoxSqlFile.js";
 
 
 export default function CalBoxPos(oneAst) {
@@ -45,6 +45,7 @@ function getBox(objBoxSqlFile){
             width: getFileWidth(objBoxSqlFile),
             height: getFileHeight(objBoxSqlFile),
             tables: getTablesInfo(objBoxSqlFile),
+            connections: getConnectionsInfo(objBoxSqlFile),
         },
     };
 
@@ -145,4 +146,18 @@ function getColumnsInfo(objBoxTable, x, y){
             name: c.columnName,
         };
     })
+}
+
+function getConnectionsInfo(objBoxSqlFile){
+    return {
+        tables: getTableConnectionsInfo(objBoxSqlFile),
+        columns: getColumnConnectionsInfo(objBoxSqlFile),
+    };
+}
+
+function getTableConnectionsInfo(objBoxSqlFile){
+    return [];
+}
+function getColumnConnectionsInfo(objBoxSqlFile){
+    return [];
 }

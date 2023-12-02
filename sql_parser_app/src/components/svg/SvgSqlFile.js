@@ -1,23 +1,21 @@
 import SvgTable from "./SvgTable";
 import {v4} from "uuid";
 
-export default function SvgSqlFile({fileName, box}) {
-    let basePos = {x:0, y:0};
+export default function SvgSqlFile({fileName, bwsSqlFile}) {
     return (
         <>
             <rect
-                x={ basePos.x } y={ basePos.y }
-                width={ box.sqlFile.width } height={ box.sqlFile.height }
+                x={ bwsSqlFile.x } y={ bwsSqlFile.y }
+                width={ bwsSqlFile.width } height={ bwsSqlFile.height }
                 className="SvgSqlFile"
             >
             </rect>
-            <text x={ basePos.x } y={ basePos.y+13 }>{ fileName }</text>
+            <text x={ bwsSqlFile.x } y={ bwsSqlFile.y+13 }>{ fileName }</text>
             {
                 // x,y位置は、ベース位置を加算する
-                box.sqlFile.tables.map(t =>
+                bwsSqlFile.tables.map(bwsTable =>
                     <SvgTable
-                        {...t}
-                        basePos={ basePos }
+                        bwsTable={ bwsTable }
                         key={ v4() }
                     />
                 )
