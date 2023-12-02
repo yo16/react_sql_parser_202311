@@ -10,7 +10,7 @@ export default function SvgSqlFile({fileName, bwsSqlFile}) {
                 className="SvgSqlFile"
             >
             </rect>
-            <text x={ bwsSqlFile.x } y={ bwsSqlFile.y+13 }>{ fileName }</text>
+            <text x={ bwsSqlFile.textX } y={ bwsSqlFile.textY }>{ fileName }</text>
             {
                 // x,y位置は、ベース位置を加算する
                 bwsSqlFile.tables.map(bwsTable =>

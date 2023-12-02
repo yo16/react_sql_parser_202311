@@ -18,6 +18,8 @@ export default class BwsColumn {
     }
     get x(){return this._x;}
     get y(){return this._y;}
+    get textX(){return this._x + SIZE_DEF.TEXT_ADJUST_X;}
+    get textY(){return this._y + SIZE_DEF.TEXT_ADJUST_Y;}
     get width(){
         return SIZE_DEF.TABLE_WIDTH - SIZE_DEF.TABLE_PADDING*2;
     }

@@ -7,7 +7,7 @@ export default function SvgTableTitle({ bwsTableTitle }) {
                 className="SvgTableTitle"
             ></rect>
             <text
-                x={bwsTableTitle.x + 3} y={bwsTableTitle.y + 16}
+                x={ bwsTableTitle.textX } y={ bwsTableTitle.textY }
                 fullname={ bwsTableTitle.text }
             >
                 { bwsTableTitle.textShort }

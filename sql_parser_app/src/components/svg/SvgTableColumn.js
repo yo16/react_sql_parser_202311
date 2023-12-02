@@ -12,7 +12,7 @@ export default function SvgTableColumn({bwsColumn}) {
                 className="SvgTableColumn"
                 onMouseOver={ () => showColumnName() }
             ></rect>
-            <text x={ bwsColumn.x + 3 } y={ bwsColumn.y + 16 }
+            <text x={ bwsColumn.textX } y={ bwsColumn.textY }
                 fullname={ bwsColumn.columnName }
                 onMouseOver={ () => showColumnName() }
             >

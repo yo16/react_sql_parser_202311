@@ -31,6 +31,10 @@ export default class BwsSqlFile {
 
         this._x = 0;
         this._y = 0;
+
+        // 参照関係を取得
+        // テーブル単位
+        // 列単位
     }
 
     set x(x){
@@ -41,4 +45,6 @@ export default class BwsSqlFile {
     }
     get x(){return this._x;}
     get y(){return this._y;}
+    get textX(){return this._x + SIZE_DEF.TEXT_ADJUST_X;}
+    get textY(){return this._y + SIZE_DEF.TEXT_ADJUST_Y;}
 };
