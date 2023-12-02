@@ -19,11 +19,23 @@ export default function TopSvg() {
 
 
     return (
-        <svg {...svgSize}>
-            <rect x="0" y="0" {...svgSize} fill="#cccccc" />
-            {
-                fileDefs.map(a => <SvgSqlFile {...a} key={ v4() } />)
-            }
-        </svg>
+        <>
+            <div style={{ display:"flex", flexDirection:"row" }}>
+                <svg {...svgSize}>
+                    <rect x="0" y="0" {...svgSize} fill="#cccccc" />
+                    {
+                        fileDefs.map(a => <SvgSqlFile {...a} key={ v4() } />)
+                    }
+                </svg>
+                {fileDefs.length>0 &&
+                    <div style={{ display:"flex", flexDirection:"column" }}>
+                        <div>Table:</div>
+                        <textarea id="textTableName" style={{ verticalAlign:"top", width:"20rem", height:"5rem" }}></textarea>
+                        <div>Column:</div>
+                        <textarea id="textColumnName" style={{ verticalAlign:"top", width:"20rem", height:"5rem" }}></textarea>
+                    </div>
+                }
+            </div>
+        </>
     );
 }
