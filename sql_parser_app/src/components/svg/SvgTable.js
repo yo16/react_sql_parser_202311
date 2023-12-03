@@ -12,7 +12,7 @@ export default function SvgTable({bwsTable}) {
         <>
             <rect
                 x={ bwsTable.x } y={ bwsTable.y }
-                width={ bwsTable.width} height={ bwsTable.height }
+                width={ bwsTable.width } height={ bwsTable.height }
                 className="SvgTable"
                 onMouseOver={ () => showTableName() }
             ></rect>

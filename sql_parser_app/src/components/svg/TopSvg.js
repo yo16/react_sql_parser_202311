@@ -1,7 +1,8 @@
 import {v4} from "uuid";
 
-import { useAst } from "../AstProvider";
-import SvgSqlFile from "./SvgSqlFile";
+import { useAst } from "../AstProvider.js";
+import SvgSqlFile from "./SvgSqlFile.js";
+import SvgLink from "./SvgLink.js";
 
 
 export default function TopSvg() {
@@ -15,8 +16,10 @@ export default function TopSvg() {
     };
 
     // テーブルのリンクと、列のリンクを作成
-    let linkPairs = [];
-
+    let links = [].concat(...fileDefs.map(d => 
+        d.bwsSqlFile.getAllConnections()
+    ));
+    console.log(links);
 
     return (
         <>
@@ -26,6 +29,9 @@ export default function TopSvg() {
                         <rect x="0" y="0" {...svgSize} fill="#cccccc" />
                         {
                             fileDefs.map(a => <SvgSqlFile {...a} key={ v4() } />)
+                        }
+                        {links.length>0 &&
+                            links.map(ln => <SvgLink {...ln} key={ v4() } />)
                         }
                     </svg>
                 </div>

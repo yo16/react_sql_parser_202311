@@ -55,48 +55,19 @@ export default class BoxColumn {
         this.columnName = astC.as ? astC.as : (exprResult.length>0)? exprResult[0].column: null;
         //this.sourceColumns = [...this.sourceColumns, exprResult];
         this.sourceColumns = exprResult;
-        /*
-        if (this.columnType === "column_ref"){
-            
-            this.sourceColumns = ;
-
-        } else if (this.columnType === "function"){
-            this.columnName = astC.as;
-
-            // astC.args.valueに、未知のものがあったらassert
-            if (astC.expr.args.value.filter(v => ["column_ref", "number"].indexOf(v.type)>=0).length
-                !== astC.expr.args.value.length){
-                // 未知のものがあってfilterされたらassert
-                console.error(`Unknown value type! ${astC.expr.args.value}`);
-            }
-
-            // numberはlineageには不要なので除外する
-            //const useValues = astC.expr.args.value.filter(v => v.type !== "number");
-            //this.sourceColumns = useValues.map(v => {return {column: v.column, table: tableMap[v.table]};});
-
-        } else if (this.columnType === "cast"){
-            this.columnName = astC.as;
-            //this.sourceColumns = [{
-            //    column: astC.expr.column,
-            //    table: tableMap[astC.expr.table],
-            //}];
-        
-        // } else if 値を固定で指定しているパターン   もあるはず
-
-        } else {
-            console.assert(false, `Unkown column type! [${this.columnType}].`);
-        }
-        */
     }
 
     // このBoxColumnの元となるテーブルと列リストを返す
     getSourceTableColumn(){
+        // extractFromAlter の戻り値
+        // [{table, column}]
         return this.sourceColumns;
     }
 
 }
 
 
+// extractFromExprFnの関数群
 function extractFromAlter(expr, tableMap){return [];}
 function extractFromAggrFunc(expr, tableMap){return [];}
 function extractFromAnyValue(expr, tableMap){return [];}

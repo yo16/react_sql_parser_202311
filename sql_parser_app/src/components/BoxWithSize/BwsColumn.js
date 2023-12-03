@@ -1,30 +1,43 @@
-import {SIZE_DEF} from "./BoxConst.js";
+import BwsSizeBase from "./BwsSizeBase.js";
+import {SIZE_DEF} from "./BwsConst.js";
 
-export default class BwsColumn {
+export default class BwsColumn extends BwsSizeBase {
     constructor(boxColumn){
+        super();
+
         this.columnName = boxColumn.columnName;
         this.columnNameShort = adjustLongText(boxColumn.columnName);
-        this.sourceColumns = [];
+        this.sourceColumns = [...boxColumn.sourceColumns];
+        //console.log("sourceColumns");
+        //console.log(this.sourceColumns.length>0 ? "-- " + this.sourceColumns[0].table + "//"+this.sourceColumns[0].column: undefined);
         this.columnType = undefined;
         
-        this._x = 0;
-        this._y = 0;
     }
-    set x(x){
-        this._x = x;
-    }
-    set y(y){
-        this._y = y;
-    }
-    get x(){return this._x;}
-    get y(){return this._y;}
-    get textX(){return this._x + SIZE_DEF.TEXT_ADJUST_X;}
-    get textY(){return this._y + SIZE_DEF.TEXT_ADJUST_Y;}
     get width(){
         return SIZE_DEF.TABLE_WIDTH - SIZE_DEF.TABLE_PADDING*2;
     }
     get height(){
         return SIZE_DEF.TABLE_COLUMN_HEIGHT;
+    }
+
+    getSourceColumns(tableOnly=false){
+        // [{table, column, left:{x,y}, right:{x,y}}]
+        let ret = [];
+        if(tableOnly){
+            // tableOnlyの場合は、table名の配列のみ
+            // どうせあとで重複削除するかもなので、ここでは重複削除しない
+            //ret = Array.from(new Set(this.sourceColumns.map(tc => tc.table)));
+            ret = this.sourceColumns.map(tc => tc.table);
+        }else{
+            ret = this.sourceColumns.map(c=>{
+                return {
+                    table: c.table,
+                    column: c.column,
+                };
+            });
+        }
+
+        return ret;
     }
 };
 

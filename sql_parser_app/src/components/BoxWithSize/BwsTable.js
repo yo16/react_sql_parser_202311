@@ -1,11 +1,11 @@
+import BwsSizeBase from "./BwsSizeBase.js";
 import BwsColumn from "./BwsColumn.js";
 import BwsTableTitle from "./BwsTableTitle.js";
-import {SIZE_DEF} from "./BoxConst.js";
+import {SIZE_DEF} from "./BwsConst.js";
 
-export default class BwsTable {
+export default class BwsTable extends BwsSizeBase {
     constructor(boxTable){
-        this._x = 0;
-        this._y = 0;
+        super();
 
         this.title = new BwsTableTitle(boxTable);
         this.columns = boxTable.columns.map(boxColumn => {
@@ -14,7 +14,7 @@ export default class BwsTable {
     }
 
     set x(x){
-        this._x = x;
+        super.x = x;
 
         this.title.x = x + SIZE_DEF.TABLE_PADDING;
         this.columns.forEach(c => {
@@ -22,7 +22,7 @@ export default class BwsTable {
         });
     }
     set y(y){
-        this._y = y;
+        super.y = y;
 
         this.title.y = y + SIZE_DEF.TABLE_PADDING;
         this.columns.forEach((c, i) => {
@@ -30,8 +30,13 @@ export default class BwsTable {
                 + i * SIZE_DEF.TABLE_COLUMN_HEIGHT;
         });
     }
-    get x(){return this._x;}
-    get y(){return this._y;}
+    // なぜかgetterが継承されないようなので直接呼び出す
+    get x(){
+        return super.x;
+    }
+    get y(){
+        return super.y;
+    }
 
     get height(){
         // テーブルの構造
@@ -47,5 +52,42 @@ export default class BwsTable {
 
     get width(){
         return SIZE_DEF.TABLE_WIDTH;
+    }
+    
+    getSourceDests(){
+        // テーブル
+        let tableNameSources = Array.from(new Set([].concat(...this.columns.map(c => c.getSourceColumns(true)))));
+        let tableSources = tableNameSources.map(t => {
+            return {
+                source: {
+                    table: t,
+                },
+                dest: {
+                    table: this.title.text,
+                },
+            };
+        });
+        
+        // 列
+        let columnSources = [].concat(...this.columns.map(c => {
+            let columnInfo = c.getSourceColumns();
+            return columnInfo.map(cinfo => {
+                return {
+                    source: {
+                        table: cinfo.table,
+                        column: cinfo.column,
+                    },
+                    dest: {
+                        table: this.title.text,
+                        column: c.columnName,
+                    },
+                };
+            });
+        }));
+
+        return {
+            tables: tableSources,
+            columns: columnSources,
+        }
     }
 };
