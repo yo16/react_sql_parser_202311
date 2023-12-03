@@ -55,6 +55,8 @@ export default class BoxColumn {
         let exprResult = extractFromExprFn[this.columnType](astC.expr, tableMap);
         this.columnName = astC.as ? astC.as : (exprResult.length>0)? exprResult[0].column: null;
         //this.sourceColumns = [...this.sourceColumns, exprResult];
+        console.log("exprResult");
+        console.log(exprResult);
         this.sourceColumns = exprResult;
     }
 
@@ -89,7 +91,8 @@ function extractFromExtract(expr, tableMap){return [];}
 function extractFromFlatten(expr, tableMap){return [];}
 function extractFromFulltextSearch(expr, tableMap){return [];}
 function extractFromFunction(expr, tableMap){
-    return [...expr.args.value.map(v => extractFromExprFn[v.type](v, tableMap))]
+    console.log(expr);
+    return [].concat(...expr.args.value.map(v => extractFromExprFn[v.type](v, tableMap)));
 }
 function extractFromInsert(expr, tableMap){return [];}
 function extractFromInterval(expr, tableMap){return [];}

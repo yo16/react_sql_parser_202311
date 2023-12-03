@@ -82,11 +82,26 @@ export default class BwsSqlFile extends BwsSizeBase {
                 if (t1.source.table) {
                     sourceTables.push({
                         isTable: true,
+                        useColumn: true,
                         source: this.posMap[joinTableColumn(t1.source.table, null)].right,
                         dest: this.posMap[joinTableColumn(t1.dest.table, null)].left,
                     });
                 }
             });
+
+            // tablesNoColumnより
+            let sourceTables2 = [];
+            tcSources.tablesNoColumn.forEach(t1 => {
+                if (t1.source.table) {
+                    sourceTables2.push({
+                        isTable: true,
+                        useColumn: false,
+                        source: this.posMap[joinTableColumn(t1.source.table, null)].right,
+                        dest: this.posMap[joinTableColumn(t1.dest.table, null)].left,
+                    });
+                }
+            });
+
 
             // columnsより
             let sourceTableColumns = [];
@@ -95,6 +110,7 @@ export default class BwsSqlFile extends BwsSizeBase {
                     sourceTableColumns.push(
                         {
                             isTable: false,
+                            useColumn: true,
                             source: this.posMap[joinTableColumn(c1.source.table, c1.source.column)].right,
                             dest: this.posMap[joinTableColumn(c1.dest.table, c1.dest.column)].left,
                         }
@@ -102,7 +118,7 @@ export default class BwsSqlFile extends BwsSizeBase {
                 }
             })
 
-            return sourceTables.concat(sourceTableColumns);
+            return sourceTables.concat(sourceTables2, sourceTableColumns);
         }));
 
         return conns;

@@ -11,6 +11,9 @@ export default class BwsTable extends BwsSizeBase {
         this.columns = boxTable.columns.map(boxColumn => {
             return new BwsColumn(boxColumn);
         });
+
+        // columnで使うものだけでなく、where句での参照も含む
+        this.sourceTableNames = boxTable.sourceTableNames;
     }
 
     set x(x){
@@ -55,9 +58,22 @@ export default class BwsTable extends BwsSizeBase {
     }
     
     getSourceDests(){
-        // テーブル
+        // テーブル(Columnベース)
         let tableNameSources = Array.from(new Set([].concat(...this.columns.map(c => c.getSourceColumns(true)))));
         let tableSources = tableNameSources.map(t => {
+            return {
+                source: {
+                    table: t,
+                },
+                dest: {
+                    table: this.title.text,
+                },
+            };
+        });
+        // テーブル(BoxTableのテーブルベース)
+        // Columnベースに存在しないものだけ
+        let tableNameSources2 = this.sourceTableNames.filter(t => tableNameSources.indexOf(t)<0);
+        let tableSources2 = tableNameSources2.map(t => {
             return {
                 source: {
                     table: t,
@@ -87,6 +103,7 @@ export default class BwsTable extends BwsSizeBase {
 
         return {
             tables: tableSources,
+            tablesNoColumn: tableSources2,
             columns: columnSources,
         }
     }

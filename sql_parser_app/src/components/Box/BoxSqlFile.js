@@ -14,7 +14,7 @@ export default class BoxSqlFile {
         console.log({ast});
         
         // テーブル名なしに項目を受け入れるためのテーブルを登録
-        this.addTable(null);
+        //this.addTable(null);
 
         // このastから読み解ける情報を登録
         this.parseAst(ast);
@@ -134,52 +134,38 @@ export default class BoxSqlFile {
                 order: 0,       // ここを計算する。末端が0。
             };
         });
-        //console.log(tableGraph);
         let maxOrder = 0;   // ついでにmaxOrderも計算しておく
-        function calcOrder(g){
+        function calcOrder(g, order){
             //console.log(g.idx, g.name);
             // 計算済みだったら不要
             if ( g.order > 0 ){return;}
+
+            // 自分に設定
+            g.order = order;
+
+            // ついでにmaxOrderを算出
+            if (maxOrder < order){
+                maxOrder = order;
+            }
             
+            // ソースに設定
             if (g.sources){
-                g.sources.forEach(childIdx => {
-                    let child = tableGraph[childIdx];
-                    //console.log("child", childIdx, child);
+                g.sources.forEach(srcIdx => {
+                    let src = tableGraph[srcIdx];
                     // 自分以下だったら自分+1にする
-                    if (child.order <= g.order){
-                        child.order = g.order + 1;
-                        if (maxOrder < child.order){
-                            maxOrder = child.order;
-                        }
+                    if (src.order <= g.order){
+                        calcOrder(src, order+1);
                     }
-    
-                    calcOrder(child);
                 })
             }
         }
         tableGraph.forEach(g => {
-            calcOrder(g);
+            calcOrder(g, 0);
         });
-        //console.log("tableGraph");
-        //console.log(tableGraph);
 
-        // グラフから書き換える
-
-
-
-        
-        // tableObjを全部見て、そのソースは自分より大きな値に変更する
-        this.tableObjs.forEach((t,idx) => {
-            let sources = t.getSourceTableNames();
-            let curOrder = this.tableOrder[idx];
-            sources.forEach(s => {
-                let sourceIdx = this.tableName2Idx[s];
-                let sourceOrder = this.tableOrder[sourceIdx];
-                // curより同じか下だったら、cur+1にする
-                if (sourceOrder <= curOrder){
-                    this.tableOrder[sourceIdx] = curOrder + 1;
-                }
-            });
+        // グラフをもとにthis.tableOrderを設定
+        tableGraph.forEach(g => {
+            this.tableOrder[g.idx] = g.order;
         });
     }
 
