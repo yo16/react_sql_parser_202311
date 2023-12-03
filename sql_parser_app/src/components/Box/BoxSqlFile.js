@@ -1,5 +1,10 @@
 import BoxTable from "./BoxTable.js";
 
+// undefined の代わりに使うテーブル名
+// BoxTable以下では undefined だけど、BoxSqlFileでは "__undefined__" とするルール
+const UNDEF_TABLE = "__undefined__";
+
+
 export default class BoxSqlFile {
     constructor(ast){
         this.tableObjs = [];
@@ -13,6 +18,9 @@ export default class BoxSqlFile {
 
         // このastから読み解ける情報を登録
         this.parseAst(ast);
+
+        // 全体の順序番号を付ける
+        this.setTableOrder();
     }
 
     parseAst(ast, tableName="__select__"){
@@ -68,9 +76,12 @@ export default class BoxSqlFile {
             // 列で参照されたテーブルへ、列を追加する
             let sourceTableColumns = addedColumnInfo.getSourceTableColumn();
             sourceTableColumns.forEach(stc => {
+                // undefは、ソーステーブルがない場合に発生する
                 if (stc.table === undefined){
-                    curTableObj.addSourceTable(null);
-                    stc.table = null;
+                    curTableObj.addSourceTable(undefined);
+                    stc.table = UNDEF_TABLE;
+                    // 見つけた時点で、テーブル登録
+                    this.addTable(UNDEF_TABLE);
                 }
                 let curFromTableIdx = this.tableName2Idx[stc.table];
                 let curFromTableObj = this.tableObjs[curFromTableIdx];
@@ -83,9 +94,6 @@ export default class BoxSqlFile {
         curAst.from.forEach(f => {
             curTableObj.addSourceTable(f.table);
         });
-
-        // 全体の順序番号を付ける
-        this.setTableOrder();
 
         //console.log({curTableObj});
     }
@@ -110,6 +118,55 @@ export default class BoxSqlFile {
         //this.tableObjs = [];
         //this.tableName2Idx = {};        // 名前からtableObjsなどのインデックスへ変換するdict
         //this.tableOrder = [];           // tableObjsの上流/下流の関係を示す 0が最下流
+
+        // テーブルグラフ
+        let tableGraph = this.tableObjs.map((to,i) => {
+            let sources = to.getSourceTableNames();
+            //console.log(i,sources);
+            let sourceIdxs = [];
+            sources.forEach(s => {
+                sourceIdxs.push(this.tableName2Idx[escapeUndef(s)]);
+            });
+            return {
+                idx: i,
+                name: escapeUndef(to.tableName),
+                sources: sourceIdxs,
+                order: 0,       // ここを計算する。末端が0。
+            };
+        });
+        //console.log(tableGraph);
+        let maxOrder = 0;   // ついでにmaxOrderも計算しておく
+        function calcOrder(g){
+            //console.log(g.idx, g.name);
+            // 計算済みだったら不要
+            if ( g.order > 0 ){return;}
+            
+            if (g.sources){
+                g.sources.forEach(childIdx => {
+                    let child = tableGraph[childIdx];
+                    //console.log("child", childIdx, child);
+                    // 自分以下だったら自分+1にする
+                    if (child.order <= g.order){
+                        child.order = g.order + 1;
+                        if (maxOrder < child.order){
+                            maxOrder = child.order;
+                        }
+                    }
+    
+                    calcOrder(child);
+                })
+            }
+        }
+        tableGraph.forEach(g => {
+            calcOrder(g);
+        });
+        //console.log("tableGraph");
+        //console.log(tableGraph);
+
+        // グラフから書き換える
+
+
+
         
         // tableObjを全部見て、そのソースは自分より大きな値に変更する
         this.tableObjs.forEach((t,idx) => {
@@ -138,3 +195,6 @@ export default class BoxSqlFile {
     }
 }
 
+function escapeUndef(tbl){
+    return (tbl!==undefined) ? tbl: UNDEF_TABLE;
+}

@@ -1,5 +1,13 @@
 import BoxColumn from "./BoxColumn";
 
+/* memo
+
+ソーステーブルがない場合（DECLAREしてるとかで）は、
+ソーステーブルを undefined にする！
+
+未知の場合は null にする！
+
+*/
 
 export default class BoxTable {
     constructor(tableName){
@@ -34,6 +42,8 @@ export default class BoxTable {
         sourceColumns.forEach(tc => {
             // なかったら追加
             if (this.sourceTableNames.indexOf(tc.table) < 0){
+                // ソーステーブルがない場合は tc.tableにundefined が入っている
+                //console.assert(tc.table !== undefined, tc.table, tc.column);
                 this.sourceTableNames.push(tc.table);
             }
         });

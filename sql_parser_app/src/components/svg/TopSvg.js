@@ -19,7 +19,7 @@ export default function TopSvg() {
     let links = [].concat(...fileDefs.map(d => 
         d.bwsSqlFile.getAllConnections()
     ));
-    console.log(links);
+    //console.log(links);
 
     return (
         <>

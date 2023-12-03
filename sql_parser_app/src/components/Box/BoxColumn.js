@@ -23,6 +23,7 @@ const extractFromExprFn = {
     tables          : extractFromTables,
     unnest          : extractFromUnnest,
     "window"        : extractFromWindow,
+    "number"        : extractFromNumber,
 };
 
 export default class BoxColumn {
@@ -87,7 +88,9 @@ function extractFromDatatype(expr, tableMap){return [];}
 function extractFromExtract(expr, tableMap){return [];}
 function extractFromFlatten(expr, tableMap){return [];}
 function extractFromFulltextSearch(expr, tableMap){return [];}
-function extractFromFunction(expr, tableMap){return [];}
+function extractFromFunction(expr, tableMap){
+    return [...expr.args.value.map(v => extractFromExprFn[v.type](v, tableMap))]
+}
 function extractFromInsert(expr, tableMap){return [];}
 function extractFromInterval(expr, tableMap){return [];}
 function extractFromShow(expr, tableMap){return [];}
@@ -95,3 +98,4 @@ function extractFromStruct(expr, tableMap){return [];}
 function extractFromTables(expr, tableMap){return [];}
 function extractFromUnnest(expr, tableMap){return [];}
 function extractFromWindow(expr, tableMap){return [];}
+function extractFromNumber(expr, tableMap){return [];}
