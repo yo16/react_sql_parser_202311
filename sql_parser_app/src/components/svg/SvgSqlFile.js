@@ -12,11 +12,6 @@ export default function SvgSqlFile({fileName, bwsSqlFile}) {
             </rect>
             <text x={ bwsSqlFile.textX } y={ bwsSqlFile.textY }>{ fileName }</text>
             {
-                bwsSqlFile.tables.map(bwsTable => {
-                    return 1;
-                })
-            }
-            {
                 // x,y位置は、ベース位置を加算する
                 bwsSqlFile.tables.map(bwsTable => 
                     <SvgTable

@@ -12,6 +12,7 @@ export default class BwsColumn extends BwsSizeBase {
         //console.log(this.sourceColumns.length>0 ? "-- " + this.sourceColumns[0].table + "//"+this.sourceColumns[0].column: undefined);
         this.columnType = undefined;
         
+        this.selected = false;
     }
     get width(){
         return SIZE_DEF.TABLE_WIDTH - SIZE_DEF.TABLE_PADDING*2;

@@ -35,4 +35,9 @@ code {
   stroke: #966;
   stroke-width: 1px;
 }
+.SvgTableColumn_selected {
+  fill: #c66;
+  stroke: #333;
+  stroke-width: 2px;
+}
 

@@ -33,8 +33,20 @@ export default function AstProvider({ children }) {
         );
     }
 
+    const selectColumn = (tableName, columnName) => {
+        // すべてのbswSqlFileから、tableName.columnNameを探してselectedの状態にする、それ以外の要素も選択解除するため全更新・・・。
+        fileDefs.forEach(d => {
+            d.bwsSqlFile.tables.forEach(t => {
+                t.columns.forEach(c => {
+                    c.selected = (t.title.text===tableName)&&(c.columnName===columnName);
+                });
+            });
+        });
+        setFileDefs([...fileDefs]);     // 全部の要素を書き換えてるから、イケてない・・・objectだから仕方ないのか。配列にすればよかったか。
+    }
+
     return (
-        <AstContext.Provider value={{ fileDefs, addQuery }}>
+        <AstContext.Provider value={{ fileDefs, addQuery, selectColumn }}>
             { children }
         </AstContext.Provider>
     );

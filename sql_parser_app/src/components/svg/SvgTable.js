@@ -20,6 +20,7 @@ export default function SvgTable({bwsTable}) {
             {
                 bwsTable.columns.map(c =>
                     <SvgTableColumn
+                        tableName={ bwsTable.title.text }
                         bwsColumn={ c }
                         key={ v4() }
                     ></SvgTableColumn>
