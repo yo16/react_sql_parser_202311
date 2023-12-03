@@ -21,12 +21,14 @@ export default function TopSvg() {
     return (
         <>
             <div style={{ display:"flex", flexDirection:"row" }}>
-                <svg {...svgSize}>
-                    <rect x="0" y="0" {...svgSize} fill="#cccccc" />
-                    {
-                        fileDefs.map(a => <SvgSqlFile {...a} key={ v4() } />)
-                    }
-                </svg>
+                <div>
+                    <svg {...svgSize}>
+                        <rect x="0" y="0" {...svgSize} fill="#cccccc" />
+                        {
+                            fileDefs.map(a => <SvgSqlFile {...a} key={ v4() } />)
+                        }
+                    </svg>
+                </div>
                 {fileDefs.length>0 &&
                     <div style={{ display:"flex", flexDirection:"column" }}>
                         <div>Table:</div>
